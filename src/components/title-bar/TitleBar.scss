@@ -1,0 +1,100 @@
+.title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0f111a;
+  color: #fff;
+  height: 40px;
+  padding: 0 8px;
+  -webkit-app-region: drag;
+
+  .tabs-root {
+    display: flex;
+    flex: 1;
+    -webkit-app-region: no-drag;
+  }
+
+  .tabs-list {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    overflow-x: auto;
+    -webkit-app-region: no-drag;
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    background-color: #1c1c2a;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    -webkit-app-region: no-drag;
+
+    &.active {
+      background-color: #3b3b5c;
+      color: #a5b4fc;
+    }
+
+    &:hover {
+      background-color: #2c2c45;
+    }
+
+    .tab-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+      display: inline-block;
+    }
+
+    .tab-close-btn {
+      background: transparent;
+      border: none;
+      color: #aaa;
+      cursor: pointer;
+      padding: 0;
+      font-size: 12px;
+      -webkit-app-region: no-drag;
+
+      &:hover {
+        color: #f87171;
+      }
+    }
+  }
+
+  .tab-add-btn {
+    background: transparent;
+    border-radius: 6px;
+    color: #a5b4fc;
+    padding: 0 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    -webkit-app-region: no-drag;
+
+    &:hover {
+      background-color: #3b3b5c;
+    }
+  }
+
+  .drag-spacer {
+    flex: 1;
+    -webkit-app-region: drag; 
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+    -webkit-app-region: no-drag;
+
+    button {
+      &:hover {
+        background-color: #3b3b5c;
+        color: #fefefe;
+      }
+    }
+  }
+}
