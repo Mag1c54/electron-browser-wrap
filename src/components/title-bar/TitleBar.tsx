@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTabsStore } from "@/store/tabs";
 import * as Tabs from "@radix-ui/react-tabs";
 import "./TitleBar.scss";
-import Button from "@/shared/ui/button/Button";
 import {
   CopyIcon,
   BorderSolidIcon,
@@ -11,8 +10,15 @@ import {
   Cross2Icon,
 } from "@radix-ui/react-icons";
 
-const TitleBar = () => {
+const TitleBar: React.FC = () => {
   const { tabs, activeTabId, switchTab, addTab, closeTab } = useTabsStore();
+
+  useEffect(() => {
+    if (tabs.length === 0) {
+
+      window.electronAPI?.closeWindow?.();
+    }
+  }, [tabs]);
 
   return (
     <div className="title-bar">
@@ -21,58 +27,76 @@ const TitleBar = () => {
         value={activeTabId ?? (tabs[0]?.id || "")}
         onValueChange={(val) => switchTab(val)}
       >
-        <Tabs.List className="tabs-list">
+        <Tabs.List className="tabs-list" aria-label="Tabs list">
           {tabs.map((tab) => (
+
             <Tabs.Trigger
               key={tab.id}
               value={tab.id}
-              className={`tab ${tab.id === activeTabId ? "active" : ""}`}
+              className={`tab-trigger ${tab.id === activeTabId ? "active" : ""}`}
             >
-              <span className="tab-label">{tab.url}</span>
-              <Button
-                variant="ghost"
-                className="tab-close-btn"
+              <span className="tab-label" title={tab.url}>
+                {tab.url}
+              </span>
+
+
+              <span
+                role="button"
+                tabIndex={0}
+                className="tab-close"
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   closeTab(tab.id);
                 }}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeTab(tab.id);
+                  }
+                }}
+                aria-label={`Close tab ${tab.url}`}
               >
                 <Cross2Icon />
-              </Button>
+              </span>
             </Tabs.Trigger>
           ))}
 
-          <Button
-            variant="ghost"
+          <button
+            type="button"
             className="tab-add-btn"
             onClick={() => addTab()}
+            aria-label="Add tab"
           >
             <PlusIcon />
-          </Button>
+          </button>
 
           <div className="drag-spacer" />
         </Tabs.List>
       </Tabs.Root>
 
       <div className="window-controls">
-        <Button
-          variant="ghost"
-          onClick={() => window.electronAPI.minimizeWindow()}
+        <button
+          type="button"
+          className="ctrl-btn"
+          onClick={() => window.electronAPI?.minimizeWindow?.()}
         >
           <BorderSolidIcon />
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={() => window.electronAPI.toggleMaximizeWindow()}
+        </button>
+        <button
+          type="button"
+          className="ctrl-btn"
+          onClick={() => window.electronAPI?.toggleMaximizeWindow?.()}
         >
           <CopyIcon />
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={() => window.electronAPI.closeWindow()}
+        </button>
+        <button
+          type="button"
+          className="ctrl-btn"
+          onClick={() => window.electronAPI?.closeWindow?.()}
         >
           <Cross1Icon />
-        </Button>
+        </button>
       </div>
     </div>
   );

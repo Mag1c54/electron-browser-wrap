@@ -22,7 +22,6 @@ export default function WebViewContextMenuUI({
   };
 
   const handleMenuItemClick = (action: () => void) => {
-    console.log("menu item clicked");
     action();
     hideContextMenu();
   };

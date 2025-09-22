@@ -1,9 +1,17 @@
-import Home from "./pages/home/Home";
+import WebView from "@/components/webview/Webview";
+import TitleBar from "@/components/title-bar/TitleBar";
+
 
 export default function App() {
   return (
-    <>
-      <Home />
-    </>
+    <div>
+    <TitleBar />
+    <div>
+      <WebView />
+    </div>
+  </div>
   );
 }
+
+
+

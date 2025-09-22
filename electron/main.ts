@@ -6,6 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 const RENDERER_DIST = path.join(__dirname, "../dist");
 const WEBVIEW_PRELOAD_PATH = path.join(__dirname, "webview-preload.mjs");
+
 const MAIN_PRELOAD_PATH = path.join(__dirname, "main-preload.mjs");
 
 let win: BrowserWindow | null = null;
@@ -44,8 +45,6 @@ function createWindow() {
     `);
   });
 }
-
-
 
 ipcMain.on("show-webview-context-menu", (event, { x, y }) => {
   const template = [

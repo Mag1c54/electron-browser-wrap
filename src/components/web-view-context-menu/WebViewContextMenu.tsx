@@ -10,26 +10,26 @@ export default function WebViewContextMenu({ webviewRef }: Props) {
   const { isVisible, position, showContextMenu, hideContextMenu } =
     useWebViewContextMenu();
 
-  useEffect(() => {
-    if (!webviewRef.current) return;
+    useEffect(() => {
+      const webview = webviewRef.current;
+      if (!webview) return;
 
-    const handleIPC = (event: any) => {
-      if (event.channel === "webview-context-menu") {
-        const { x, y } = event.args[0];
+      const handleIPC = (event: any) => {
+        if (event.channel === "webview-context-menu") {
+          const { x, y } = event.args[0];
+          showContextMenu({ x, y });
+        }
+      };
+    
+      webview.addEventListener("ipc-message", handleIPC);
+    
+      return () => {
+        webview.removeEventListener("ipc-message", handleIPC);
+      };
+    }, [webviewRef.current, showContextMenu]);
 
-        showContextMenu({ x, y });
-      }
-    };
-
-    webviewRef.current.addEventListener("ipc-message", handleIPC);
-
-    return () => {
-      webviewRef.current?.removeEventListener("ipc-message", handleIPC);
-    };
-  }, [webviewRef, showContextMenu]);
 
   if (!isVisible) return null;
-console.log(webviewRef , 22)
   return (
 <WebViewContextMenuUI
   x={position.x}
