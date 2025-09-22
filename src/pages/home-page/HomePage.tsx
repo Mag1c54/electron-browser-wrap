@@ -3,6 +3,7 @@ import "./HomePage.scss";
 import { useTabsStore } from "@/store/tabs";
 import { useNavigate } from "@/hooks/useNavigate";
 import Button from "@/shared/ui/button/Button";
+import logo from "../../assets/logo.ico";
 
 export function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +24,7 @@ export function HomePage() {
   return (
     <div className="home-page">
       <img
-        src="/assets/logo.ico"
+        src={logo}
         alt="Logo"
         className="logo"
         width={80}

@@ -8,19 +8,28 @@
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build-main": "tsc -p tsconfig.main.json"
   },
   "build": {
     "appId": "com.swagCorp.DamnBrowser",
     "productName": "Damn Browser",
+    "asar": true,
     "directories": {
       "buildResources": "public/assets"
     },
+    "files": [
+      "dist/**",
+      "dist-electron/**"
+    ],
+    "extraFiles": [
+      "dist-electron/main.js"
+    ],
     "win": {
-      "icon": "logo.ico"
+      "icon": "public/assets/logo.ico"
     },
     "mac": {
-      "icon": "logo.ico"
+      "icon": "public/assets/logo.ico"
     }
   },
   "dependencies": {

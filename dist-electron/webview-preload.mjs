@@ -1,17 +1,4 @@
-"use strict";
-const { ipcRenderer } = require("electron");
-window.addEventListener("DOMContentLoaded", () => {
-  document.addEventListener("contextmenu", (e) => {
-    e.preventDefault();
-    ipcRenderer.sendToHost("webview-context-menu", {
-      x: e.clientX,
-      y: e.clientY
-    });
-  });
-});
-window.addEventListener("DOMContentLoaded", () => {
-  const style = document.createElement("style");
-  style.innerHTML = `
+"use strict";const{ipcRenderer:r}=require("electron");window.addEventListener("DOMContentLoaded",()=>{document.addEventListener("contextmenu",e=>{e.preventDefault(),r.sendToHost("webview-context-menu",{x:e.clientX,y:e.clientY})})});window.addEventListener("DOMContentLoaded",()=>{const e=document.createElement("style");e.innerHTML=`
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -40,6 +27,4 @@ window.addEventListener("DOMContentLoaded", () => {
     ::-webkit-scrollbar-corner {
       background: transparent;
     }
-  `;
-  document.head.appendChild(style);
-});
+  `,document.head.appendChild(e)});

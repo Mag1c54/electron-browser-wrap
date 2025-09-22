@@ -1,10 +1,1 @@
-"use strict";
-const electron = require("electron");
-electron.contextBridge.exposeInMainWorld("electronAPI", {
-  send: (channel, ...args) => electron.ipcRenderer.send(channel, ...args),
-  on: (channel, cb) => electron.ipcRenderer.on(channel, (_e, ...args) => cb(...args)),
-  getWebviewPreloadPath: (cb) => electron.ipcRenderer.once("webview-preload-path", (_e, path) => cb(path)),
-  minimizeWindow: () => electron.ipcRenderer.send("minimize-window"),
-  toggleMaximizeWindow: () => electron.ipcRenderer.send("toggle-maximize-window"),
-  closeWindow: () => electron.ipcRenderer.send("close-window")
-});
+"use strict";const e=require("electron");e.contextBridge.exposeInMainWorld("electronAPI",{send:(i,...n)=>e.ipcRenderer.send(i,...n),on:(i,n)=>e.ipcRenderer.on(i,(d,...o)=>n(...o)),getWebviewPreloadPath:i=>e.ipcRenderer.once("webview-preload-path",(n,d)=>i(d)),minimizeWindow:()=>e.ipcRenderer.send("minimize-window"),toggleMaximizeWindow:()=>e.ipcRenderer.send("toggle-maximize-window"),closeWindow:()=>e.ipcRenderer.send("close-window")});

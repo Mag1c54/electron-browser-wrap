@@ -4,9 +4,9 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
+
 const RENDERER_DIST = path.join(__dirname, "../dist");
 const WEBVIEW_PRELOAD_PATH = path.join(__dirname, "webview-preload.mjs");
-
 const MAIN_PRELOAD_PATH = path.join(__dirname, "main-preload.mjs");
 
 let win: BrowserWindow | null = null;
@@ -26,21 +26,27 @@ function createWindow() {
       webviewTag: true,
     },
   });
+
+
   win.webContents.once("did-finish-load", () => {
     win?.webContents.send("webview-preload-path", WEBVIEW_PRELOAD_PATH);
   });
 
   if (VITE_DEV_SERVER_URL) {
+
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
+
+    win.loadFile(path.join(RENDERER_DIST, "index.html")).catch((err) => {
+      console.error("Failed to load index.html:", err);
+    });
   }
+
 
   win.webContents.on("did-finish-load", () => {
     win?.webContents.insertCSS(`
       html, body {
         overflow: hidden !important;
-
       }
     `);
   });
@@ -49,23 +55,16 @@ function createWindow() {
 ipcMain.on("show-webview-context-menu", (event, { x, y }) => {
   const template = [
     { label: "Reload", click: () => event.sender.reload() },
-    {
-      label: "Open DevTools",
-      click: () => event.sender.openDevTools({ mode: "detach" }),
-    },
+    { label: "Open DevTools", click: () => event.sender.openDevTools({ mode: "detach" }) },
     { type: "separator" as const },
-    {
-      label: "Inspect Element",
-      click: () => event.sender.inspectElement(x, y),
-    },
+    { label: "Inspect Element", click: () => event.sender.inspectElement(x, y) },
   ];
 
   const menu = Menu.buildFromTemplate(template);
-  menu.popup({
-    window: BrowserWindow.fromWebContents(event.sender) || undefined,
-  });
+  menu.popup({ window: BrowserWindow.fromWebContents(event.sender) || undefined });
 });
 
+// Управление окном
 ipcMain.on("minimize-window", () => win?.minimize());
 ipcMain.on("toggle-maximize-window", () => {
   if (!win) return;
@@ -73,12 +72,15 @@ ipcMain.on("toggle-maximize-window", () => {
 });
 ipcMain.on("close-window", () => win?.close());
 
+// Создаём окно после готовности приложения
 app.whenReady().then(createWindow);
 
+// Закрытие приложения
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
+// Для macOS
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });

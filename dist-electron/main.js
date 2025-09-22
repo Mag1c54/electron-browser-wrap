@@ -1,72 +1,52 @@
-import { ipcMain, Menu, BrowserWindow, app } from "electron";
-import path from "path";
-import { fileURLToPath } from "url";
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-const RENDERER_DIST = path.join(__dirname, "../dist");
-const WEBVIEW_PRELOAD_PATH = path.join(__dirname, "webview-preload.mjs");
-const MAIN_PRELOAD_PATH = path.join(__dirname, "main-preload.mjs");
-let win = null;
-function createWindow() {
-  win = new BrowserWindow({
+import { ipcMain as t, Menu as p, BrowserWindow as a, app as i } from "electron";
+import n from "path";
+import { fileURLToPath as w } from "url";
+const l = n.dirname(w(import.meta.url)), s = process.env.VITE_DEV_SERVER_URL, f = n.join(l, "../dist"), h = n.join(l, "webview-preload.mjs"), E = n.join(l, "main-preload.mjs");
+let e = null;
+function d() {
+  e = new a({
     width: 1200,
     height: 800,
     title: "Damn Browser",
-    icon: path.join(__dirname, "../public/assets/logo.ico"),
+    icon: n.join(l, "../public/assets/logo.ico"),
     titleBarStyle: "default",
-    frame: false,
+    frame: !1,
     webPreferences: {
-      preload: MAIN_PRELOAD_PATH,
-      contextIsolation: true,
-      nodeIntegration: false,
-      webviewTag: true
+      preload: E,
+      contextIsolation: !0,
+      nodeIntegration: !1,
+      webviewTag: !0
     }
-  });
-  win.webContents.once("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("webview-preload-path", WEBVIEW_PRELOAD_PATH);
-  });
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-  } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
-  }
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.insertCSS(`
+  }), e.webContents.once("did-finish-load", () => {
+    e == null || e.webContents.send("webview-preload-path", h);
+  }), s ? e.loadURL(s) : e.loadFile(n.join(f, "index.html")).catch((o) => {
+    console.error("Failed to load index.html:", o);
+  }), e.webContents.on("did-finish-load", () => {
+    e == null || e.webContents.insertCSS(`
       html, body {
         overflow: hidden !important;
-
       }
     `);
   });
 }
-ipcMain.on("show-webview-context-menu", (event, { x, y }) => {
-  const template = [
-    { label: "Reload", click: () => event.sender.reload() },
-    {
-      label: "Open DevTools",
-      click: () => event.sender.openDevTools({ mode: "detach" })
-    },
+t.on("show-webview-context-menu", (o, { x: r, y: m }) => {
+  const c = [
+    { label: "Reload", click: () => o.sender.reload() },
+    { label: "Open DevTools", click: () => o.sender.openDevTools({ mode: "detach" }) },
     { type: "separator" },
-    {
-      label: "Inspect Element",
-      click: () => event.sender.inspectElement(x, y)
-    }
+    { label: "Inspect Element", click: () => o.sender.inspectElement(r, m) }
   ];
-  const menu = Menu.buildFromTemplate(template);
-  menu.popup({
-    window: BrowserWindow.fromWebContents(event.sender) || void 0
-  });
+  p.buildFromTemplate(c).popup({ window: a.fromWebContents(o.sender) || void 0 });
 });
-ipcMain.on("minimize-window", () => win == null ? void 0 : win.minimize());
-ipcMain.on("toggle-maximize-window", () => {
-  if (!win) return;
-  win.isMaximized() ? win.unmaximize() : win.maximize();
+t.on("minimize-window", () => e == null ? void 0 : e.minimize());
+t.on("toggle-maximize-window", () => {
+  e && (e.isMaximized() ? e.unmaximize() : e.maximize());
 });
-ipcMain.on("close-window", () => win == null ? void 0 : win.close());
-app.whenReady().then(createWindow);
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+t.on("close-window", () => e == null ? void 0 : e.close());
+i.whenReady().then(d);
+i.on("window-all-closed", () => {
+  process.platform !== "darwin" && i.quit();
 });
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+i.on("activate", () => {
+  a.getAllWindows().length === 0 && d();
 });

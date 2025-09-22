@@ -1,4 +1,5 @@
 import "./ErrorPage.scss";
+import logo from "../../assets/logo.ico";
 
 interface ErrorPageProps {
   url: string;
@@ -9,7 +10,7 @@ export function ErrorPage({ url }: ErrorPageProps) {
   return (
     <div className="error-page">
       <img
-        src="/assets/logo.ico"
+        src={logo}
         alt="Logo"
         className="logo"
         width={80}
